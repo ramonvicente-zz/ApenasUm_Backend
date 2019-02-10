@@ -163,6 +163,11 @@ MEDIA_ROOT = str(base_dir_join('media'))
 MEDIA_URL = '/media/'
 
 '''
+    LOGIN
+'''
+API_URL = "http://127.0.0.1:8000/o/token/"
+
+'''
 SIMPLE HISTORY
 '''
 
@@ -191,18 +196,8 @@ INSTALLED_APPS += ['rest_framework',
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.SearchFilter',
-        'django_filters.rest_framework.DjangoFilterBackend',
-    ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    'PAGE_SIZE': 50
 }
 
 LOGIN_REDIRECT_URL = '/dashboard/'

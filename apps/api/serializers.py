@@ -67,6 +67,17 @@ class SignUpSerializer(RegisterSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+    cpf = serializers.SerializerMethodField()
+    telefone = serializers.SerializerMethodField()
+    
+    def get_cpf(self, cpf): 
+        return cpf
+
+    def get_telefone(self, telefone):
+        return telefone
+
+    # cpf = serializers.CharField(required=False)
+    # telefone = serializers.CharField(required=False)
 
     def validate(self, data):
         email = data['email']

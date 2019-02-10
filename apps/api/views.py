@@ -11,6 +11,9 @@ from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views.mixins import OAuthLibMixin
 from oauthlib import common
 
+from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
+
 # REST IMPORTS
 from rest_auth.registration.views import RegisterView, SocialLoginView
 from rest_framework import filters, generics, pagination
@@ -19,6 +22,7 @@ from rest_framework.views import APIView, Response
 
 # CUSTOM IMPORTS
 from django.contrib.auth.models import User
+from apps.client.models import Usuario
 from apps.common.views import get_address
 from apps.message_core.models import PushToken
 from datetime import datetime, timedelta
@@ -95,49 +99,104 @@ class SignUp(RegisterView, OAuthLibMixin):
                         headers=headers)
 
 
-class Login(OAuthLibMixin, generics.GenericAPIView):
+class Login(generics.GenericAPIView):
     serializer_class = serializers.LoginSerializer
-    server_class = oauth2_settings.OAUTH2_SERVER_CLASS
-    validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
-    oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
 
-    def get(self, request, format=None):
-        serializer = serializers.LoginSerializer()
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
+    def post(self, request):
+        context = {}
         serializer = serializers.LoginSerializer(data=request.data)
+
         if serializer.is_valid():
-            body, status = oauth2_login(self, request, serializer)
-            return Response(body, status=status)
-        body = '{"error": "%s", "status": "%s"}' % (serializer.errors["error"][-1], serializer.errors["status"][-1])
-        body = json.loads(body)
-        return Response(body, status=400)
+            email = serializer.data['email']
+            password = serializer.data['password']
+            try:
+                user = authenticate(username=email, password=password)
+                if user is not None:
+                    login(request, user)
+            except:
+                pass
+
+            try:
+                app = Application.objects.all()[0]
+            except:
+                context['msg'] = 'Application não encontrado'
+                return Response(context, status=500)
+            
+            if user:
+                usuario = Usuario.objects.get(user__id=user.id)
+                print('usuario', usuario)
+                client_auth = requests.auth.HTTPBasicAuth(app.client_id, app.client_secret)
+                post_data = {"grant_type": "password", "username": email, "password": password}
+                headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+                response = requests.post(settings.API_URL, auth=client_auth, data=post_data, headers=headers)
+
+                try:
+                    context = {
+                        'name': usuario.nome_completo,
+                        'email': usuario.email,
+                        'cpf': usuario.cpf,
+                        'telefone': usuario.telefone
+                    }
+                except:
+                    context = {
+                        'name': usuario.nome_completo,
+                        'email': usuario.email,
+                        'cpf': usuario.cpf,
+                        'telefone': usuario.telefone
+                    }
+                return Response(context, status=200)
+            else:
+                context['status'] = 'incorrectPassword'
+                context['msg'] = 'Senha incorreta.'
+                return Response(context, status=409)
+
+            return Response(context, status=200)
+        else:
+            return Response(serializer.errors, status=500)
+
+# class Login(OAuthLibMixin, generics.GenericAPIView):
+#     serializer_class = serializers.LoginSerializer
+#     server_class = oauth2_settings.OAUTH2_SERVER_CLASS
+#     validator_class = oauth2_settings.OAUTH2_VALIDATOR_CLASS
+#     oauthlib_backend_class = oauth2_settings.OAUTH2_BACKEND_CLASS
+
+#     def get(self, request, format=None):
+#         serializer = serializers.LoginSerializer()
+#         return Response(serializer.data)
+
+#     def post(self, request, format=None):
+#         serializer = serializers.LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             body, status = oauth2_login(self, request, serializer)
+#             return Response(body, status=status)
+#         body = '{"error": "%s", "status": "%s"}' % (serializer.errors["error"][-1], serializer.errors["status"][-1])
+#         body = json.loads(body)
+#         return Response(body, status=400)
 
 
-def oauth2_login(self, request, serializer):
-    if hasattr(request.data, "_mutable"):
-        request.data._mutable = True
-    user = filter_users_by_email(serializer.data['email'])[0]
-    app = Application.objects.all()[0]
-    request.data.update({"grant_type": "password", "username": user.username, "client_id": app.client_id,
-                        "client_secret": app.client_secret})
-    url, headers, body, status = self.create_token_response(request)
-    if status == 200:
-        access_token = json.loads(body).get("access_token")
-        if access_token is not None:
-            token = get_access_token_model().objects.get(
-                token=access_token)
-            app_authorized.send(
-                sender=self, request=request,
-                token=token)
-    response = HttpResponse(content=body, status=status)
-    for k, v in headers.items():
-        response[k] = v
-    if 'error' in body:
-        status = 400
-        body = {'error': _(body['error_description']), 'status': 'error'}
-    return json.loads(body), status
+# def oauth2_login(self, request, serializer):
+    # if hasattr(request.data, "_mutable"):
+    #     request.data._mutable = True
+    # user = filter_users_by_email(serializer.data['email'])[0]
+    # app = Application.objects.all()[0]
+    # request.data.update({"grant_type": "password", "username": user.username, "client_id": app.client_id,
+    #                     "client_secret": app.client_secret})
+    # url, headers, body, status = self.create_token_response(request)
+    # if status == 200:
+    #     access_token = json.loads(body).get("access_token")
+    #     if access_token is not None:
+    #         token = get_access_token_model().objects.get(
+    #             token=access_token)
+    #         app_authorized.send(
+    #             sender=self, request=request,
+    #             token=token)
+    # response = HttpResponse(content=body, status=status)
+    # for k, v in headers.items():
+    #     response[k] = v
+    # if 'error' in body:
+    #     status = 400
+    #     body = {'error': _(body['error_description']), 'status': 'error'}
+    # return json.loads(body), status
 
 
 class FacebookLogin(SocialLoginView):
