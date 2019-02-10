@@ -21,9 +21,10 @@ from rest_framework.views import APIView, Response
 
 # CUSTOM IMPORTS
 from django.contrib.auth.models import User
-from apps.client.models import Usuario, CartaoReal
+from apps.client.models import Usuario, CartaoReal, CartaoVigente
 from apps.common.views import get_address
 from apps.message_core.models import PushToken
+from apps.message_core.tasks import generate_number
 from datetime import datetime, timedelta
 from . import serializers
 import json
@@ -358,7 +359,7 @@ class CadCartao(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         response = {}
         if serializer.is_valid():
-            
+
             cartao = CartaoReal()
             cartao.id_zoop = serializer.data['id_zoop']
             cartao.numero = serializer.data['numero']
@@ -374,6 +375,45 @@ class CadCartao(generics.GenericAPIView):
 
             usuario = Usuario.objects.get(user__id=request.user.id)
             usuario.cartao_real.add(cartao)
+
+            return Response(response, status=200)
+        return Response(response, status=500)
+
+
+class CadVigente(generics.GenericAPIView):
+    serializer_class = serializers.CartaoVigenteSerializer
+    
+    def get(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        response = {}
+        if serializer.is_valid():
+            usuario = Usuario.objects.get(user__id=request.user.id)
+            data = datetime.now().date() + timedelta(days=5*365)
+            month_year = str(data.year) + '-' + str(data.month)
+
+            cartao = CartaoVigente()
+            cartao.numero = generate_number(size=16)
+            cartao.cvc = generate_number(size=3)
+            cartao.nome_cartao = usuario.nome_completo
+            cartao.validade = month_year
+            cartao.bandeira = "Master"
+            cartao.is_vigente = True
+            cartao.data_validade = data
+            cartao.modo_cartao = "Virtual"
+            cartao.quantidade_uso = "0"
+            cartao.save()
+
+            response['numero'] = cartao.numero
+            response['cvc'] = cartao.cvc
+            response['nome_cartao'] = cartao.nome_cartao
+            response['validade'] = cartao.validade
+            response['bandeira'] = cartao.bandeira
+            response['is_vigente'] = cartao.is_vigente
+            response['data_validade'] = cartao.data_validade
+            response['modo_cartao'] = cartao.modo_cartao
+            response['quantidade_uso'] = cartao.quantidade_uso
+
+            usuario.cartao_vigencia.add(cartao)
 
             return Response(response, status=200)
         return Response(response, status=500)

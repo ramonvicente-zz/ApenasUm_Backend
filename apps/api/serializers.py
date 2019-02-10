@@ -23,7 +23,7 @@ from rest_framework.fields import CurrentUserDefault
 
 # CUSTOM IMPORTS
 from apps.message_core.models import News
-from apps.client.models import CartaoReal
+from apps.client.models import CartaoReal, CartaoVigente
 from apps.common.models import GENDER_LIST
 
 
@@ -192,3 +192,11 @@ class CartaoRealSerializer(serializers.ModelSerializer):
         model = CartaoReal
         fields = ('id_zoop','numero','cvc','nome_cartao','validade','bandeira','is_prioritario',
         'data_validade','tipo_cartao','quantidade_uso')
+
+
+class CartaoVigenteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CartaoVigente
+        fields = ('numero','cvc','nome_cartao','validade','bandeira','is_vigente',
+        'data_validade','modo_cartao','quantidade_uso')
