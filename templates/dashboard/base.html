@@ -23,19 +23,7 @@
     <!-- Begin page -->
     <div class="wrapper">
         {% block menu %}
-
-            {% if usuario_master %}
-                {% include 'dashboard/includes/menu/menu.html' %}
-            {% elif usuario_gerente %}
-                {% include 'dashboard/includes/menu/menu_gerente.html' %}
-            {% elif usuario_supervisor %}
-                {% include 'dashboard/includes/menu/menu_supervisor.html' %}
-            {% elif usuario_operador %}
-                {% include 'dashboard/includes/menu/menu_operador.html' %}
-            {% else %}
-                {% include 'dashboard/includes/menu/menu.html' %}
-            {% endif %}
-
+            {% include 'dashboard/includes/menu.html' %}
         {% endblock %}
         <!-- ============================================================== -->
         <!-- Start Page Content here -->

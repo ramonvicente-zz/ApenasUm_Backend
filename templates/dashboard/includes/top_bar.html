@@ -9,34 +9,10 @@
                 </span>
                 <span>
                     <span class="account-user-name">
-                        {% if request.user.first_name %}
-                            {{request.user.first_name}}
-                        {% else %}
-                            {% if usuario_master %}
-                                {{usuario_master.nome_completo}}
-                            {% elif usuario_gerente %}
-                                {{usuario_gerente.nome_completo}}
-                            {% elif usuario_supervisor %}
-                                {{usuario_supervisor.nome_completo}}
-                            {% elif usuario_operador %}
-                                {{usuario_operador.nome_completo}}
-                            {% else %}
-                                Sem nome
-                            {% endif %}
-                        {% endif %}
+                        {{request.user}}
                     </span>
                     <span class="account-position">
-                        {% if usuario_master %}
-                            Administrador
-                        {% elif usuario_gerente %}
-                            Gerente
-                        {% elif usuario_supervisor %}
-                            Supervisor
-                        {% elif usuario_operador %}
-                            Operador
-                        {% else %}
-                            Administrador
-                        {% endif %}
+                        Administrador
                     </span>
 
                     
@@ -48,31 +24,21 @@
                     <h6 class="text-overflow m-0">Bem vindo !</h6>
                 </div>
 
-                <!-- item-->
                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                     <i class="mdi mdi-account-circle"></i>
                     <span>Minha conta</span>
                 </a>
 
-                <!-- item-->
-                <!-- <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-account-settings-variant"></i>
-                    <span>Admin</span>
-                </a> -->
-
-                <!-- item-->
                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                     <i class="mdi mdi-lifebuoy"></i>
                     <span>Suporte</span>
                 </a>
 
-                <!-- item-->
                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                     <i class="mdi mdi-lock-outline"></i>
                     <span>Alterar senha</span>
                 </a>
 
-                <!-- item-->
                 <a href="{% url 'account_logout' %}" class="dropdown-item notify-item">
                     <i class="mdi mdi-logout"></i>
                     <span> Sair</span>
@@ -85,16 +51,6 @@
     <button class="button-menu-mobile open-left disable-btn">
         <i class="mdi mdi-menu"></i>
     </button>
-    <!-- <div class="app-search">
-        <form>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search...">
-                <span class="mdi mdi-magnify"></span>
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">Search</button>
-                </div>
-            </div>
-        </form>
-    </div> -->
+    
 </div>
 <!-- end Topbar -->
