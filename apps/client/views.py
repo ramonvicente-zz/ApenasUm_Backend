@@ -105,7 +105,9 @@ class TransacaoCreate(View):
         form = TransacaoForm(request.POST, request.FILES)
 
         if form.is_valid():
+            usuario = Usuario.objects.get(user__id=request.user.id)
             transacao = form.save(commit=False)
+            transacao.usuario = usuario
             transacao.save()
 
             return redirect(reverse("transacao-list"))
