@@ -57,6 +57,7 @@ class CartaoReal(BestPraticesModel):
 class Usuario(BestPraticesModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     # BASIC INFO
+    id_zoop = models.CharField(blank=True, null=True, max_length=200)
     nome_completo = models.CharField('Nome Completo', max_length=200)
     email = models.EmailField('Email', max_length=100)
     cpf = models.CharField('CPF', max_length=14, blank=True, null=True)
