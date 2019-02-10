@@ -15,13 +15,13 @@ from django.contrib.auth import authenticate, login, logout
 
 # REST IMPORTS
 from rest_auth.registration.views import RegisterView, SocialLoginView
-from rest_framework import filters, generics, pagination
+from rest_framework import filters, generics, pagination, mixins
 from rest_framework.authtoken.models import Token as Auth_Token
 from rest_framework.views import APIView, Response
 
 # CUSTOM IMPORTS
 from django.contrib.auth.models import User
-from apps.client.models import Usuario, CartaoReal, CartaoVigente
+from apps.client.models import Usuario, CartaoReal, CartaoVigente, Transacao
 from apps.common.views import get_address
 from apps.message_core.models import PushToken
 from apps.message_core.tasks import generate_number
@@ -417,3 +417,8 @@ class CadVigente(generics.GenericAPIView):
 
             return Response(response, status=200)
         return Response(response, status=500)
+
+
+class TransacaoList(generics.ListAPIView):
+    queryset = Transacao.objects.all()
+    serializer_class = serializers.TransacaoSerializer
