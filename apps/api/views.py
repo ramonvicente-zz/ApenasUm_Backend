@@ -126,12 +126,7 @@ class Login(generics.GenericAPIView):
                     usuario = Usuario.objects.get(user__id=user.id)
                 except:
                     pass
-                API_URL = "http://157.230.15.200/o/token/"
-                client_auth = requests.auth.HTTPBasicAuth(app.client_id, app.client_secret)
-                post_data = {"grant_type": "password", "username": email, "password": password}
-                headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-                response = requests.post(API_URL, auth=client_auth, data=post_data, headers=headers)
-
+                
                 try:
                     context = {
                         'name': usuario.nome_completo,
