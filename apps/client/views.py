@@ -41,9 +41,15 @@ class UsuarioCreate(View):
             new_user = User.objects.create_user(username=usuario.email, email=usuario.email, password='apenasum2019')
             new_user.is_active = True
             new_user.first_name = usuario.nome_completo
+            # Criação do comprador
+            data = { "first_name": usuario.nome_completo, "last_name": ""}
+            url = 'https://api.zoop.ws/v1/marketplaces/3249465a7753536b62545a6a684b0000/buyers'
+            requisicao_comprador = requests.post(url, data, headers={'Authorization': 'Basic enBrX3Rlc3RfRXpDa3pGRktpYkdRVTZIRnE3RVlWdXhJOg=='})
+            objeto_comprador = json.loads(requisicao_comprador.text)
+            id_cliente = objeto_comprador['id']
             new_user.save()
-
             usuario.user = new_user
+            usuario.id_zoop = id_cliente
             usuario.save()
 
             return redirect(reverse("usuario-list"))
