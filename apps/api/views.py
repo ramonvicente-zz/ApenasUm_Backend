@@ -12,7 +12,6 @@ from oauth2_provider.views.mixins import OAuthLibMixin
 from oauthlib import common
 
 from django.contrib.auth import authenticate, login, logout
-from apenas_um.settings import API_URL
 
 # REST IMPORTS
 from rest_auth.registration.views import RegisterView, SocialLoginView
@@ -127,6 +126,7 @@ class Login(generics.GenericAPIView):
                     usuario = Usuario.objects.get(user__id=user.id)
                 except:
                     pass
+                API_URL = "http://127.0.0.1:8000/o/token/"
                 client_auth = requests.auth.HTTPBasicAuth(app.client_id, app.client_secret)
                 post_data = {"grant_type": "password", "username": email, "password": password}
                 headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
