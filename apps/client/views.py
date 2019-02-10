@@ -21,30 +21,7 @@ class UsuarioList(View):
 
     def get(self, request):
         usuario = Usuario.objects.all()
-        if request.user.is_authenticated:
-            user = request.user.pk
-            usuario_master = Usuario.objects.filter(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-            usuario_gerente = Usuario.objects.filter(user__pk=user, tipo_usuario='Gerente')
-            usuario_supervisor = Usuario.objects.filter(user__pk=user, tipo_usuario='Supervisor')
-            usuario_operador = Usuario.objects.filter(user__pk=user, tipo_usuario='Operador')
-            if usuario_master:
-                usuario_master = Usuario.objects.get(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-                context = {'usuario_master': usuario_master}
-            elif usuario_gerente:
-                usuario_gerente = Usuario.objects.get(user__pk=user, tipo_usuario='Gerente')
-                context = {'usuario_gerente': usuario_gerente}
-            elif usuario_supervisor:
-                usuario_supervisor = Usuario.objects.get(user__pk=user, tipo_usuario='Supervisor')
-                context = {'usuario_supervisor': usuario_supervisor}
-            elif usuario_operador:
-                usuario_operador = Usuario.objects.get(user__pk=user, tipo_usuario='Operador')
-                context = {'usuario_operador': usuario_operador}
-                return redirect(reverse("dashboard_operador"))
-            else:
-                user = user
-                context = {'user': user}
-            
-        context.update({'usuario': usuario})
+        context = {'usuario': usuario}
         return render(request, self.template_name, context)
 
 
@@ -53,30 +30,7 @@ class UsuarioCreate(View):
 
     def get(self, request):
         form = UsuarioForm()
-        if request.user.is_authenticated:
-            user = request.user.pk
-            usuario_master = Usuario.objects.filter(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-            usuario_gerente = Usuario.objects.filter(user__pk=user, tipo_usuario='Gerente')
-            usuario_supervisor = Usuario.objects.filter(user__pk=user, tipo_usuario='Supervisor')
-            usuario_operador = Usuario.objects.filter(user__pk=user, tipo_usuario='Operador')
-            if usuario_master:
-                usuario_master = Usuario.objects.get(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-                context = {'usuario_master': usuario_master}
-            elif usuario_gerente:
-                usuario_gerente = Usuario.objects.get(user__pk=user, tipo_usuario='Gerente')
-                context = {'usuario_gerente': usuario_gerente}
-            elif usuario_supervisor:
-                usuario_supervisor = Usuario.objects.get(user__pk=user, tipo_usuario='Supervisor')
-                context = {'usuario_supervisor': usuario_supervisor}
-            elif usuario_operador:
-                usuario_operador = Usuario.objects.get(user__pk=user, tipo_usuario='Operador')
-                context = {'usuario_operador': usuario_operador}
-                return redirect(reverse("dashboard_operador"))
-            else:
-                user = user
-                context = {'user': user}
-
-        context.update({'form': form})
+        context = {'form': form}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -84,7 +38,7 @@ class UsuarioCreate(View):
 
         if form.is_valid():
             usuario = form.save(commit=False)
-            new_user = User.objects.create_user(username=usuario.email, email=usuario.email, password='rifa2019')
+            new_user = User.objects.create_user(username=usuario.email, email=usuario.email, password='apenasum2019')
             new_user.is_active = True
             new_user.first_name = usuario.nome_completo
             new_user.save()
@@ -92,7 +46,7 @@ class UsuarioCreate(View):
             usuario.user = new_user
             usuario.save()
 
-            return redirect(reverse("usuario-edit", kwargs={'pk': usuario.pk}))
+            return redirect(reverse("usuario-list"))
 
         context = {'form':form}
         return render(request, self.template_name, context)
@@ -104,31 +58,7 @@ class UsuarioEdit(View):
     def get(self, request, pk):
         usuario = Usuario.objects.get(pk=pk)
         form = UsuarioForm(instance=usuario)
-        if request.user.is_authenticated:
-            user = request.user.pk
-            usuario_master = Usuario.objects.filter(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-            usuario_gerente = Usuario.objects.filter(user__pk=user, tipo_usuario='Gerente')
-            usuario_supervisor = Usuario.objects.filter(user__pk=user, tipo_usuario='Supervisor')
-            usuario_operador = Usuario.objects.filter(user__pk=user, tipo_usuario='Operador')
-
-            if usuario_master:
-                usuario_master = Usuario.objects.get(user__pk=user, user__is_superuser=True, tipo_usuario='Master')
-                context = {'usuario_master': usuario_master}
-            elif usuario_gerente:
-                usuario_gerente = Usuario.objects.get(user__pk=user, tipo_usuario='Gerente')
-                context = {'usuario_gerente': usuario_gerente}
-            elif usuario_supervisor:
-                usuario_supervisor = Usuario.objects.get(user__pk=user, tipo_usuario='Supervisor')
-                context = {'usuario_supervisor': usuario_supervisor}
-            elif usuario_operador:
-                usuario_operador = Usuario.objects.get(user__pk=user, tipo_usuario='Operador')
-                context = {'usuario_operador': usuario_operador}
-                return redirect(reverse("dashboard_operador"))
-            else:
-                user = user
-                context = {'user': user}
-
-        context.update({'form': form, 'usuario':usuario})
+        context = {'form': form, 'usuario':usuario}
         return render(request, self.template_name, context)
 
     def post(self, request, pk):    

@@ -123,8 +123,10 @@ class Login(generics.GenericAPIView):
                 return Response(context, status=500)
             
             if user:
-                usuario = Usuario.objects.get(user__id=user.id)
-                print('usuario', usuario)
+                try:
+                    usuario = Usuario.objects.get(user__id=user.id)
+                except:
+                    pass
                 client_auth = requests.auth.HTTPBasicAuth(app.client_id, app.client_secret)
                 post_data = {"grant_type": "password", "username": email, "password": password}
                 headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
@@ -138,12 +140,7 @@ class Login(generics.GenericAPIView):
                         'telefone': usuario.telefone
                     }
                 except:
-                    context = {
-                        'name': usuario.nome_completo,
-                        'email': usuario.email,
-                        'cpf': usuario.cpf,
-                        'telefone': usuario.telefone
-                    }
+                    pass
                 return Response(context, status=200)
             else:
                 context['status'] = 'incorrectPassword'

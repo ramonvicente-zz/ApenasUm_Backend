@@ -32,12 +32,11 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title">Lista de usuários
-                        <a class="btn btn-primary" href="{% url 'usuario-create' %}" style="margin-left:76%;">Novo</a>
+                        <a class="btn btn-primary" href="{% url 'usuario-create' %}" style="float: right;">Novo</a>
                     </h4>
                     <table id="basic-datatable" class="table dt-responsive nowrap" width="100%">
                         <thead>
                             <tr>
-                                <th>Tipo de usuário</th>
                                 <th>Nome completo</th>
                                 <th>CPF</th>
                                 <th>E-mail</th>
@@ -48,7 +47,6 @@
                         <tbody>
                             {% for usuario in usuario %}
                             <tr>
-                                <td>{{usuario.tipo_usuario}}</td>
                                 <td>{{usuario.nome_completo}}</td>
                                 <td>{{usuario.cpf}}</td>
                                 <td>{{usuario.email}}</td>
