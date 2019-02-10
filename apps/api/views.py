@@ -21,7 +21,7 @@ from rest_framework.views import APIView, Response
 
 # CUSTOM IMPORTS
 from django.contrib.auth.models import User
-from apps.client.models import Usuario
+from apps.client.models import Usuario, CartaoReal
 from apps.common.views import get_address
 from apps.message_core.models import PushToken
 from datetime import datetime, timedelta
@@ -349,3 +349,26 @@ class AddressAPI(APIView):
     def get(self, request, cep):
         response = get_address(cep)
         return response
+
+
+class CadCartao(generics.GenericAPIView):
+    serializer_class = serializers.CartaoRealSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        response = {}
+        if serializer.is_valid():
+            cartao = CartaoReal()
+            cartao.id_zoop = serializer.data['id_zoop']
+            cartao.numero = serializer.data['numero']
+            cartao.cvc = serializer.data['cvc']
+            cartao.nome_cartao = serializer.data['nome_cartao']
+            cartao.validade = serializer.data['validade']
+            cartao.bandeira = serializer.data['bandeira']
+            cartao.is_prioritario = serializer.data['is_prioritario']
+            cartao.data_validade = serializer.data['data_validade']
+            cartao.tipo_cartao = serializer.data['tipo_cartao']
+            cartao.quantidade_uso = serializer.data['quantidade_uso']
+            cartao.save()
+            return Response(response, status=200)
+        return Response(response, status=500)
