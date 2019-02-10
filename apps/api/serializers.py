@@ -76,9 +76,6 @@ class LoginSerializer(serializers.Serializer):
     def get_telefone(self, telefone):
         return telefone
 
-    # cpf = serializers.CharField(required=False)
-    # telefone = serializers.CharField(required=False)
-
     def validate(self, data):
         email = data['email']
         email = get_adapter().clean_email(email)
