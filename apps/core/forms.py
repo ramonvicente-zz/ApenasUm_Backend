@@ -4,7 +4,7 @@ from apps.client.models import Usuario
 class SignUpForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = ['nome_completo', 'email', 'cpf', 'telefone', 'tipo_usuario']
+        fields = ['nome_completo', 'email', 'cpf', 'telefone']
 
     def __init__(self,*args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
@@ -21,8 +21,6 @@ class SignUpForm(forms.ModelForm):
 
         self.fields['telefone'].widget.attrs['class'] = 'form-control masked-phone'
         self.fields['telefone'].widget.attrs['placeholder'] = 'Telefone'
-
-        self.fields['tipo_usuario'].widget.attrs['class'] = 'form-control'
 
 
 class ConfirmSmsForm(forms.Form):
