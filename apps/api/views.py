@@ -358,6 +358,7 @@ class CadCartao(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         response = {}
         if serializer.is_valid():
+            
             cartao = CartaoReal()
             cartao.id_zoop = serializer.data['id_zoop']
             cartao.numero = serializer.data['numero']
@@ -370,5 +371,9 @@ class CadCartao(generics.GenericAPIView):
             cartao.tipo_cartao = serializer.data['tipo_cartao']
             cartao.quantidade_uso = serializer.data['quantidade_uso']
             cartao.save()
+
+            usuario = Usuario.objects.get(user__id=request.user.id)
+            usuario.cartao_real.add(cartao)
+
             return Response(response, status=200)
         return Response(response, status=500)
