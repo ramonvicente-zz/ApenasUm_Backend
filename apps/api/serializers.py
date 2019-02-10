@@ -23,7 +23,7 @@ from rest_framework.fields import CurrentUserDefault
 
 # CUSTOM IMPORTS
 from apps.message_core.models import News
-from apps.client.models import CartaoReal, CartaoVigente
+from apps.client.models import CartaoReal, CartaoVigente, Transacao
 from apps.common.models import GENDER_LIST
 
 
@@ -200,3 +200,10 @@ class CartaoVigenteSerializer(serializers.ModelSerializer):
         model = CartaoVigente
         fields = ('numero','cvc','nome_cartao','validade','bandeira','is_vigente',
         'data_validade','modo_cartao','quantidade_uso')
+
+class TransacaoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Transacao
+        fields = ('usuario','cartao_vigencia','cartao_real','data_transacao','latitude','longitude',
+        'valor','local','cnpj_logista','is_parcelado','quantidade_parcelas')
