@@ -12,7 +12,7 @@ from oauth2_provider.views.mixins import OAuthLibMixin
 from oauthlib import common
 
 from django.contrib.auth import authenticate, login, logout
-from django.conf import settings
+from apenas_um.settings import API_URL
 
 # REST IMPORTS
 from rest_auth.registration.views import RegisterView, SocialLoginView
@@ -130,7 +130,7 @@ class Login(generics.GenericAPIView):
                 client_auth = requests.auth.HTTPBasicAuth(app.client_id, app.client_secret)
                 post_data = {"grant_type": "password", "username": email, "password": password}
                 headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-                response = requests.post(settings.API_URL, auth=client_auth, data=post_data, headers=headers)
+                response = requests.post(API_URL, auth=client_auth, data=post_data, headers=headers)
 
                 try:
                     context = {
@@ -141,6 +141,7 @@ class Login(generics.GenericAPIView):
                     }
                 except:
                     pass
+
                 return Response(context, status=200)
             else:
                 context['status'] = 'incorrectPassword'
