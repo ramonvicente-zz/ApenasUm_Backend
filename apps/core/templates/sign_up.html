@@ -1,0 +1,85 @@
+{% extends 'account/base.html' %} 
+
+{% block content %}
+<div class="card card-border-color card-border-color-primary">
+    <div class="card-header">
+        <img src="/static/custom/img/logomarca.png" alt="logo" width="130" height="90" class="logo-img">
+        <span class="splash-description">Please enter your user information.</span>
+    </div>
+    <div class="card-body">
+        <form id="signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <div class="signup-form">
+                <div class="form-group">
+                    {{form.full_name}}
+                </div>
+
+                <div class="form-group">
+                    {{form.cpf}}
+                </div>
+
+                <div class="form-group">
+                    {{form.birth_date}}
+                </div>
+
+                <div class="form-group">
+                    {{form.image}}
+                </div>
+
+                <div class="form-group">
+                    {{form.phone}}
+                </div>
+
+                <div class="form-group">
+                    {{form.email}}
+                </div>
+
+                <div class="form-group">
+                    {{form.password}}
+                </div>
+
+                <div class="form-group">
+                    {{form.confirm_password}}
+                </div>
+
+                <div class="form-group">
+                    {{form.user_terms}}
+                    <label for="{{form.user_terms.id_for_label}}">
+                        Eu li e concordo com os
+                        <a style="color:#00bcd4;" href="#">termos de uso</a>.
+                    </label>
+                </div>
+                <div class="form-group">
+                    <a style="color:#00bcd4;" href="{% url 'dashboard' %}">Você já é cadastrado?</a>
+                </div>
+
+                <button class="btn btn-block btn-primary btn-xl" type="submit">Me cadastrar</button>
+
+            </div>
+    </div>
+{% endblock %} 
+
+{% block javascript %}
+    <!-- SweetAlert -->
+    <script src="/static/dashboard/src/js/lib/sweetalert/sweetalert.js"></script>
+    <!-- Validation Plugin Js -->
+    <script src="/static/dashboard/theme/plugins/jquery-validation/jquery.validate.js"></script>
+    <!-- Custom Js -->
+    <script src="/static/dashboard/theme/plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+    <!-- CPF / CNPJ VALIDATOR JS -->
+    <script src="/static/dashboard/src/js/lib/jquery-cpf-cnpj/jquery.cpfcnpj.js"></script>
+    <script>
+        var id_full_name = "#{{form.full_name.auto_id}}";
+        var id_email = "#{{form.email.auto_id}}";
+        var id_cpf = "#{{form.cpf.auto_id}}";
+        var id_phone = "#{{form.phone.auto_id}}";
+        var id_birth_date = "#{{form.birth_date.auto_id}}";
+        var id_image = "#{{form.image.auto_id}}";
+        var id_user_terms = "#{{form.user_terms.auto_id}}";
+        var id_password = "#{{form.password.auto_id}}";
+        var id_confirm_password = "#{{form.confirm_password.auto_id}}";
+
+    </script>
+    <!-- CUSTOM JS -->
+    <script src="/static/custom/js/signup.js"></script> 
+    
+{% endblock %}
