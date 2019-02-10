@@ -17,6 +17,7 @@ urlpatterns = [
 
     # MESSAGE
     path('notification/send/', views.SendPushNotification.as_view(), name='api_notification_send_push_notification'),
+    path('card/create/', views.CadCartao.as_view(), name='api_card_create'),
 
     # SERVICES
     re_path(r'^cep/(?P<cep>\w+)/$', views.AddressAPI.as_view(), name='api_address'),
