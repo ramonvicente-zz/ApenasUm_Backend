@@ -80,3 +80,64 @@ class UsuarioDelete(View):
         Usuario.objects.get(pk=pk).delete()
         return redirect(reverse("usuario-list"))
 
+
+"""
+TRANSAÇÃO VIEW
+"""
+class TransacaoList(View):
+    template_name = "transacao/list.html"
+
+    def get(self, request):
+        transacao = Transacao.objects.all()
+        context = {'transacao': transacao}
+        return render(request, self.template_name, context)
+
+
+class TransacaoCreate(View):
+    template_name = "transacao/create.html"
+
+    def get(self, request):
+        form = TransacaoForm()
+        context = {'form': form}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = TransacaoForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            transacao = form.save(commit=False)
+            transacao.save()
+
+            return redirect(reverse("transacao-list"))
+
+        context = {'form':form}
+        return render(request, self.template_name, context)
+
+
+class TransacaoEdit(View):
+    template_name = "transacao/edit.html"
+
+    def get(self, request, pk):
+        transacao = Transacao.objects.get(pk=pk)
+        form = TransacaoForm(instance=transacao)
+        context = {'form': form, 'transacao':transacao}
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):    
+        transacao = Transacao.objects.get(pk=pk)
+        form = TransacaoForm(request.POST, request.FILES, instance=transacao)
+
+        if form.is_valid():
+            transacao = form.save(commit=False)
+            transacao.save()
+            
+            return redirect(reverse("transacao-list"))
+
+        context = {'form':form, 'transacao':transacao}
+        return render(request, self.template_name, context)
+
+
+class TransacaoDelete(View):
+    def get(self, request, pk):
+        Transacao.objects.get(pk=pk).delete()
+        return redirect(reverse("transacao-list"))

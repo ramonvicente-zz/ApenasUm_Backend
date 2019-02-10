@@ -1,0 +1,113 @@
+{% extends 'dashboard/base.html' %} 
+{% load staticfiles %} 
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Apenas Um</a></li>
+                        <li class="breadcrumb-item active">Formulário de transação</li>
+                    </ol>
+                </div>
+                <h4 class="page-title">Formulário de transação</h4>
+            </div>
+        </div>
+    </div>     
+    <!-- end page title --> 
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Criação da transação</h4>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form id="usuario-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Cartão Vigência</label>
+                                            {{form.cartao_vigencia}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Cartão Real</label>
+                                            {{form.cartao_real}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Data Transação</label>
+                                            {{form.data_transacao}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Valor</label>
+                                            {{form.valor}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">CNPJ</label>
+                                            {{form.cnpj_logista}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">É parcelado?</label>
+                                            {{form.is_parcelado}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Local</label>
+                                            {{form.local}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantidade de parcelas</label>
+                                            {{form.quantidade_parcelas}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-11">
+                                        <a class="btn btn-secondary" href="{% url 'transacao-list' %}">Cancelar</a>
+                                    </div>
+                                    <div class="float-left">
+                                        <button type="submit" class="btn btn-primary">Salvar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> <!-- end col -->
+                    </div>
+                    <!-- end row-->
+
+                </div> <!-- end card-body -->
+            </div> <!-- end card -->
+        </div><!-- end col -->
+    </div>
+    <!-- end row -->
+</div>
+{% endblock %} 
+
+{% block javascript %}
+
+{% endblock %}
+
